@@ -14,3 +14,9 @@ export type FindUserParams = Partial<{
   id: number;
   email: string;
 }>;
+
+export type CreateConversationParams = {
+  authorId: number;
+  recipientId: number;
+  message: string;
+};
