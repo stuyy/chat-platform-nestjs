@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
+import { ParticipantsModule } from './participants/participants.module';
 import entities from './utils/typeorm';
 
 @Module({
@@ -24,6 +25,7 @@ import entities from './utils/typeorm';
       entities,
     }),
     ConversationsModule,
+    ParticipantsModule,
   ],
   controllers: [],
   providers: [],
