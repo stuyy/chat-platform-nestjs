@@ -18,4 +18,16 @@ export class ParticipantsService implements IParticipantsService {
     const participant = this.participantRepository.create(params);
     return this.participantRepository.save(participant);
   }
+
+  findParticipantConversations(id: number) {
+    console.log(`findParticipantConversation: ${id}`);
+    return this.participantRepository
+      .createQueryBuilder('participant')
+      .leftJoinAndSelect('participant.conversations', 'conversation')
+      .where('participant.id = :id', { id })
+      .leftJoinAndSelect('conversation.participants', 'participants')
+      .leftJoin('participants.user', 'user')
+      .addSelect(['user.firstName', 'user.lastName', 'user.email', 'user.id'])
+      .getRawOne();
+  }
 }
