@@ -1,11 +1,23 @@
-import { Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Participant } from './Participant';
+import {
+  Entity,
+  Index,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from './User';
 
 @Entity({ name: 'conversations' })
+@Index(['creator.id', 'recipient.id'], { unique: true })
 export class Conversation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => Participant, (participant) => participant.conversations)
-  participants: Participant[];
+  @OneToOne(() => User, { createForeignKeyConstraints: false })
+  @JoinColumn()
+  creator: User;
+
+  @OneToOne(() => User, { createForeignKeyConstraints: false })
+  @JoinColumn()
+  recipient: User;
 }
