@@ -1,7 +1,7 @@
 import { Message } from '../utils/typeorm';
-import { CreateMessageParams } from '../utils/types';
+import { CreateMessageParams, CreateMessageResponse } from '../utils/types';
 
 export interface IMessageService {
-  createMessage(params: CreateMessageParams): Promise<Message>;
+  createMessage(params: CreateMessageParams): Promise<CreateMessageResponse>;
   getMessagesByConversationId(conversationId: number): Promise<Message[]>;
 }
