@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthenticatedGuard } from '../auth/utils/Guards';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
@@ -20,6 +21,7 @@ export class ConversationsController {
   constructor(
     @Inject(Services.CONVERSATIONS)
     private readonly conversationsService: IConversationsService,
+    private readonly events: EventEmitter2,
   ) {}
 
   @Post()
@@ -28,10 +30,12 @@ export class ConversationsController {
     @Body() createConversationPayload: CreateConversationDto,
   ) {
     console.log('createConversation');
-    return this.conversationsService.createConversation(
+    const conversation = await this.conversationsService.createConversation(
       user,
       createConversationPayload,
     );
+    this.events.emit('conversation.create', conversation);
+    return conversation;
   }
 
   @Get()
