@@ -26,6 +26,8 @@ export class MessagingGateway implements OnGatewayConnection {
   constructor(
     @Inject(Services.GATEWAY_SESSION_MANAGER)
     private readonly sessions: IGatewaySessionManager,
+    @Inject(Services.CONVERSATIONS)
+    private readonly conversationService: IConversationsService,
   ) {}
 
   @WebSocketServer()
@@ -47,6 +49,7 @@ export class MessagingGateway implements OnGatewayConnection {
   onClientConnect(
     @MessageBody() data: any,
     @ConnectedSocket() client: AuthenticatedSocket,
+    w,
   ) {
     console.log('onClientConnect');
     console.log(data);
@@ -77,5 +80,21 @@ export class MessagingGateway implements OnGatewayConnection {
     console.log(payload.recipient);
     const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
     if (recipientSocket) recipientSocket.emit('onConversation', payload);
+  }
+
+  @OnEvent('message.delete')
+  async handleMessageDelete(payload) {
+    console.log('Inside message.delete');
+    console.log(payload);
+    const conversation = await this.conversationService.findConversationById(
+      payload.conversationId,
+    );
+    if (!conversation) return;
+    const { creator, recipient } = conversation;
+    const receipientSocket =
+      creator.id === payload.userId
+        ? this.sessions.getUserSocket(recipient.id)
+        : this.sessions.getUserSocket(creator.id);
+    if (receipientSocket) receipientSocket.emit('onMessageDelete', payload);
   }
 }

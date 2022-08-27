@@ -56,5 +56,11 @@ export class MessageController {
       conversationId,
       messageId,
     });
+    this.eventEmitter.emit('message.delete', {
+      userId: user.id,
+      messageId,
+      conversationId,
+    });
+    return { conversationId, messageId };
   }
 }
