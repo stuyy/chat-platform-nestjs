@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -50,4 +51,6 @@ export class ConversationsController {
     );
     return conversation;
   }
+
+  // @Delete(':conversationId/messages/:messageId')
 }
