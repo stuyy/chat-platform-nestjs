@@ -6,6 +6,7 @@ import {
   Inject,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { Routes, Services } from '../utils/constants';
@@ -14,6 +15,7 @@ import { User } from '../utils/typeorm';
 import { CreateMessageDto } from './dtos/CreateMessage.dto';
 import { IMessageService } from './message';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EditMessageDto } from './dtos/EditMessage.dto';
 
 @Controller(Routes.MESSAGES)
 export class MessageController {
@@ -62,5 +64,18 @@ export class MessageController {
       conversationId,
     });
     return { conversationId, messageId };
+  }
+
+  // api/conversations/:conversationId/messages/:messageId
+  @Patch(':messageId')
+  async editMessage(
+    @AuthUser() { id: userId }: User,
+    @Param('id') conversationId: number,
+    @Param('messageId') messageId: number,
+    @Body() { content }: EditMessageDto,
+  ) {
+    const params = { userId, content, conversationId, messageId };
+    const message = await this.messageService.editMessage(params);
+    return message;
   }
 }
