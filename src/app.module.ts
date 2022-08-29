@@ -9,6 +9,7 @@ import { MessagesModule } from './messages/messages.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import entities from './utils/typeorm';
+import { GroupModule } from './groups/group.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import entities from './utils/typeorm';
     MessagesModule,
     GatewayModule,
     EventEmitterModule.forRoot(),
+    GroupModule,
   ],
   controllers: [],
   providers: [],
