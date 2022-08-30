@@ -25,7 +25,7 @@ export class Group {
   @JoinTable()
   users: User[];
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { createForeignKeyConstraints: false })
   @JoinColumn()
   creator: User;
 

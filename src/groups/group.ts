@@ -1,6 +1,7 @@
 import { Group } from '../utils/typeorm';
-import { CreateGroupParams } from '../utils/types';
+import { CreateGroupParams, FetchGroupsParams } from '../utils/types';
 
 export interface IGroupService {
   createGroup(params: CreateGroupParams);
+  getGroups(params: FetchGroupsParams): Promise<Group[]>;
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
 import { User } from '../utils/typeorm';
@@ -14,5 +14,10 @@ export class GroupController {
   @Post()
   async createGroup(@AuthUser() user: User, @Body() payload: CreateGroupDto) {
     this.groupService.createGroup({ ...payload, creator: user });
+  }
+
+  @Get()
+  getGroups(@AuthUser() user: User) {
+    return this.groupService.getGroups({ userId: user.id });
   }
 }

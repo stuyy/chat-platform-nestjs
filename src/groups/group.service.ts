@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { IUserService } from '../users/user';
 import { Services } from '../utils/constants';
 import { Group } from '../utils/typeorm';
-import { CreateGroupParams } from '../utils/types';
+import { CreateGroupParams, FetchGroupsParams } from '../utils/types';
 import { IGroupService } from './group';
 
 @Injectable()
@@ -26,5 +26,13 @@ export class GroupService implements IGroupService {
     console.log(users);
     const group = this.groupRepository.create({ users, creator, title });
     return this.groupRepository.save(group);
+  }
+
+  getGroups(params: FetchGroupsParams): Promise<Group[]> {
+    return this.groupRepository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.users', 'user')
+      .where('user.id IN (:users)', { users: [params.userId] })
+      .getMany();
   }
 }
