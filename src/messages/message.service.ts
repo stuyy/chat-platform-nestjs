@@ -30,7 +30,6 @@ export class MessageService implements IMessageService {
     console.log(conversation);
     if (creator.id !== user.id && recipient.id !== user.id)
       throw new HttpException('Cannot Create Message', HttpStatus.FORBIDDEN);
-
     const message = this.messageRepository.create({
       content,
       conversation,

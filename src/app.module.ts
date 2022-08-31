@@ -10,6 +10,7 @@ import { GatewayModule } from './gateway/gateway.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import entities from './utils/typeorm';
 import { GroupModule } from './groups/group.module';
+import { GroupMessageModule } from './group-messages/group-messages.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GroupModule } from './groups/group.module';
     GatewayModule,
     EventEmitterModule.forRoot(),
     GroupModule,
+    GroupMessageModule,
   ],
   controllers: [],
   providers: [],
