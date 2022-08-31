@@ -24,7 +24,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ select: false })
   @Exclude()
   password: string;
 

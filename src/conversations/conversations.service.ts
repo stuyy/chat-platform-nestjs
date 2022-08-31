@@ -20,20 +20,8 @@ export class ConversationsService implements IConversationsService {
     return this.conversationRepository
       .createQueryBuilder('conversation')
       .leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
-      .leftJoin('conversation.creator', 'creator')
-      .addSelect([
-        'creator.id',
-        'creator.firstName',
-        'creator.lastName',
-        'creator.email',
-      ])
-      .leftJoin('conversation.recipient', 'recipient')
-      .addSelect([
-        'recipient.id',
-        'recipient.firstName',
-        'recipient.lastName',
-        'recipient.email',
-      ])
+      .leftJoinAndSelect('conversation.creator', 'creator')
+      .leftJoinAndSelect('conversation.recipient', 'recipient')
       .where('creator.id = :id', { id })
       .orWhere('recipient.id = :id', { id })
       .orderBy('conversation.lastMessageSentAt', 'DESC')
