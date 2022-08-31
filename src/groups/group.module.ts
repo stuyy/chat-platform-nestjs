@@ -15,5 +15,11 @@ import { GroupService } from './group.service';
       useClass: GroupService,
     },
   ],
+  exports: [
+    {
+      provide: Services.GROUPS,
+      useClass: GroupService,
+    },
+  ],
 })
 export class GroupModule {}

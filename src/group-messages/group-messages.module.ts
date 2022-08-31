@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GroupModule } from '../groups/group.module';
 import { Services } from '../utils/constants';
-import { Message } from '../utils/typeorm';
+import { GroupMessage } from '../utils/typeorm';
 import { GroupMessageController } from './group-messages.controller';
 import { GroupMessageService } from './group-messages.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message])],
+  imports: [TypeOrmModule.forFeature([GroupMessage]), GroupModule],
   controllers: [GroupMessageController],
   providers: [
     {

@@ -20,11 +20,16 @@ export class GroupMessageController {
   ) {}
 
   @Post()
-  createGroupMessage(
+  async createGroupMessage(
     @AuthUser() user: User,
     @Param('id', ParseIntPipe) id: number,
     @Body() { content }: CreateMessageDto,
   ) {
     console.log(`Creating Group Message for ${id}`);
+    await this.groupMessageService.createGroupMessage({
+      author: user,
+      groupId: id,
+      content,
+    });
   }
 }
