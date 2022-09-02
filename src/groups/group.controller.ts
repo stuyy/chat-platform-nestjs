@@ -22,7 +22,7 @@ export class GroupController {
 
   @Post()
   async createGroup(@AuthUser() user: User, @Body() payload: CreateGroupDto) {
-    this.groupService.createGroup({ ...payload, creator: user });
+    return this.groupService.createGroup({ ...payload, creator: user });
   }
 
   @Get()
