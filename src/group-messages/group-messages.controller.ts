@@ -7,9 +7,11 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Patch,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateMessageDto } from '../messages/dtos/CreateMessage.dto';
+import { EditMessageDto } from '../messages/dtos/EditMessage.dto';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
 import { User } from '../utils/typeorm';
@@ -66,5 +68,18 @@ export class GroupMessageController {
       groupId,
     });
     return { groupId, messageId };
+  }
+
+  @Patch(':messageId')
+  async editGroupMessage(
+    @AuthUser() { id: userId }: User,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Param('messageId', ParseIntPipe) messageId: number,
+    @Body() { content }: EditMessageDto,
+  ) {
+    const params = { userId, content, groupId, messageId };
+    const message = await this.groupMessageService.editGroupMessage(params);
+    this.eventEmitter.emit('group.message.update', message);
+    return message;
   }
 }

@@ -8,6 +8,7 @@ import { Group, GroupMessage } from '../utils/typeorm';
 import {
   CreateGroupMessageParams,
   DeleteGroupMessageParams,
+  EditGroupMessageParams,
 } from '../utils/types';
 import { IGroupMessageService } from './group-messages';
 
@@ -97,5 +98,19 @@ export class GroupMessageService implements IGroupMessageService {
       );
       return this.groupMessageRepository.delete({ id: message.id });
     }
+  }
+
+  async editGroupMessage(params: EditGroupMessageParams) {
+    const messageDB = await this.groupMessageRepository.findOne({
+      where: {
+        id: params.messageId,
+        author: { id: params.userId },
+      },
+      relations: ['group', 'group.creator', 'group.users', 'author'],
+    });
+    if (!messageDB)
+      throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);
+    messageDB.content = params.content;
+    return this.groupMessageRepository.save(messageDB);
   }
 }
