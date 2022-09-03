@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -46,5 +47,24 @@ export class GroupMessageController {
     console.log(`Fetching GroupMessages for Group Id: ${id}`);
     const messages = await this.groupMessageService.getGroupMessages(id);
     return { id, messages };
+  }
+
+  @Delete(':messageId')
+  async deleteGroupMessage(
+    @AuthUser() user: User,
+    @Param('id', ParseIntPipe) groupId: number,
+    @Param('messageId', ParseIntPipe) messageId: number,
+  ) {
+    await this.groupMessageService.deleteGroupMessage({
+      userId: user.id,
+      groupId,
+      messageId,
+    });
+    this.eventEmitter.emit('group.message.delete', {
+      userId: user.id,
+      messageId,
+      groupId,
+    });
+    return { groupId, messageId };
   }
 }

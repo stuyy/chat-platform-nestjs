@@ -65,7 +65,6 @@ export class MessageController {
     });
     return { conversationId, messageId };
   }
-
   // api/conversations/:conversationId/messages/:messageId
   @Patch(':messageId')
   async editMessage(
