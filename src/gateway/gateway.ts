@@ -13,7 +13,7 @@ import { Server, Socket } from 'socket.io';
 import { IConversationsService } from '../conversations/conversations';
 import { Services } from '../utils/constants';
 import { AuthenticatedSocket } from '../utils/interfaces';
-import { Conversation, Message } from '../utils/typeorm';
+import { Conversation, Group, Message } from '../utils/typeorm';
 import {
   CreateGroupMessageResponse,
   CreateMessageResponse,
@@ -190,5 +190,14 @@ export class MessagingGateway implements OnGatewayConnection {
     const { id } = payload.group;
     console.log('Inside group.message.create');
     this.server.to(`group-${id}`).emit('onGroupMessage', payload);
+  }
+
+  @OnEvent('group.create')
+  handleGroupCreate(payload: Group) {
+    console.log('group.create event');
+    payload.users.forEach((user) => {
+      const socket = this.sessions.getUserSocket(user.id);
+      socket && socket.emit('onGroupCreate', payload);
+    });
   }
 }
