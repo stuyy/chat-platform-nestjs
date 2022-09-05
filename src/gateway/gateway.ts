@@ -16,6 +16,7 @@ import { Services } from '../utils/constants';
 import { AuthenticatedSocket } from '../utils/interfaces';
 import { Conversation, Group, GroupMessage, Message } from '../utils/typeorm';
 import {
+  AddGroupUserResponse,
   CreateGroupMessageResponse,
   CreateMessageResponse,
 } from '../utils/types';
@@ -228,5 +229,11 @@ export class MessagingGateway
     const room = `group-${payload.group.id}`;
     console.log(room);
     this.server.to(room).emit('onGroupMessageUpdate', payload);
+  }
+
+  @OnEvent('group.user.add')
+  handleGroupUserAdd(payload: AddGroupUserResponse) {
+    const recipientSocket = this.sessions.getUserSocket(payload.user.id);
+    recipientSocket && recipientSocket.emit('onGroupUserAdd', payload);
   }
 }
