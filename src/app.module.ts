@@ -28,6 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
       database: process.env.MYSQL_DB_NAME,
       synchronize: true,
       entities,
+      logging: true,
     }),
     ConversationsModule,
     MessagesModule,
