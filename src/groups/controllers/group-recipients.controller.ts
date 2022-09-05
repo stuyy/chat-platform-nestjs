@@ -35,12 +35,16 @@ export class GroupRecipientsController {
   }
 
   @Delete(':userId')
-  removeGroupRecipient(
+  async removeGroupRecipient(
     @AuthUser() { id: issuerId }: User,
     @Param('id', ParseIntPipe) id: number,
     @Param('userId', ParseIntPipe) removeUserId: number,
   ) {
     const params = { issuerId, id, removeUserId };
-    return this.groupRecipientService.removeGroupRecipient(params);
+    const response = await this.groupRecipientService.removeGroupRecipient(
+      params,
+    );
+    this.eventEmitter.emit('group.user.remove', response);
+    return response.group;
   }
 }
