@@ -10,7 +10,6 @@ import { GatewayModule } from './gateway/gateway.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import entities from './utils/typeorm';
 import { GroupModule } from './groups/group.module';
-import { GroupMessageModule } from './group-messages/group-messages.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -35,7 +34,6 @@ import { APP_GUARD } from '@nestjs/core';
     GatewayModule,
     EventEmitterModule.forRoot(),
     GroupModule,
-    GroupMessageModule,
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,

@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IUserService } from '../users/user';
-import { Services } from '../utils/constants';
-import { Group } from '../utils/typeorm';
-import { CreateGroupParams, FetchGroupsParams } from '../utils/types';
-import { IGroupService } from './group';
+import { IUserService } from '../../users/user';
+import { Services } from '../../utils/constants';
+import { Group } from '../../utils/typeorm';
+import { CreateGroupParams, FetchGroupsParams } from '../../utils/types';
+import { IGroupService } from '../interfaces/group';
 
 @Injectable()
 export class GroupService implements IGroupService {

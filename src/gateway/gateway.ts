@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { IConversationsService } from '../conversations/conversations';
-import { IGroupService } from '../groups/group';
+import { IGroupService } from '../groups/interfaces/group';
 import { Services } from '../utils/constants';
 import { AuthenticatedSocket } from '../utils/interfaces';
 import { Conversation, Group, GroupMessage, Message } from '../utils/typeorm';
