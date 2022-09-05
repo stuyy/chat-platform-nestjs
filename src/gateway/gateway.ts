@@ -45,7 +45,6 @@ export class MessagingGateway
 
   handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
     console.log('Incoming Connection');
-    console.log(socket.user);
     this.sessions.setUserSocket(socket.user.id, socket);
     socket.emit('connected', {});
   }
@@ -61,8 +60,6 @@ export class MessagingGateway
     @MessageBody() data: any,
     @ConnectedSocket() socket: AuthenticatedSocket,
   ) {
-    console.log('handleGetOnlineGroupUsers');
-    console.log(data);
     const group = await this.groupsService.findGroupById(
       parseInt(data.groupId),
     );
@@ -234,6 +231,11 @@ export class MessagingGateway
   @OnEvent('group.user.add')
   handleGroupUserAdd(payload: AddGroupUserResponse) {
     const recipientSocket = this.sessions.getUserSocket(payload.user.id);
+    console.log('inside group.user.add');
+    console.log(`group-${payload.group.id}`);
+    this.server
+      .to(`group-${payload.group.id}`)
+      .emit('onGroupReceivedNewUser', payload);
     recipientSocket && recipientSocket.emit('onGroupUserAdd', payload);
   }
 }
