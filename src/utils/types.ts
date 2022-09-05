@@ -97,3 +97,9 @@ export type DeleteGroupMessageParams = {
   groupId: number;
   messageId: number;
 };
+
+export type AddGroupRecipientParams = {
+  id: number;
+  email: string;
+  userId: number;
+};

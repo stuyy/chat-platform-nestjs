@@ -72,31 +72,8 @@ export class MessagingGateway
       const socket = this.sessions.getUserSocket(user.id);
       socket ? onlineUsers.push(user) : offlineUsers.push(user);
     });
-
-    console.log(onlineUsers);
-    console.log(offlineUsers);
-
     socket.emit('onlineGroupUsersReceived', { onlineUsers, offlineUsers });
-
-    // const clientsInRoom = this.server.sockets.adapter.rooms.get(
-    //   `group-${data.groupId}`,
-    // );
-    // console.log(clientsInRoom);
-    // this.sessions.getSockets().forEach((socket) => {
-    //   if (clientsInRoom.has(socket.id)) {
-    //     console.log(socket.user.email + ' is online');
-    //   }
-    // });
   }
-
-  // handleDisconnect(client: AuthenticatedSocket) {
-  //   console.log('Client Disconnect');
-  // }
-
-  // @SubscribeMessage('onConnect')
-  // handleOnConnect(@ConnectedSocket() client: AuthenticatedSocket) {
-  //   this.sessions.setUserSo
-  // }
 
   @SubscribeMessage('createMessage')
   handleCreateMessage(@MessageBody() data: any) {
