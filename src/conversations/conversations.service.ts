@@ -4,8 +4,12 @@ import { Repository } from 'typeorm';
 import { IUserService } from '../users/user';
 import { Services } from '../utils/constants';
 import { Conversation, User } from '../utils/typeorm';
-import { CreateConversationParams } from '../utils/types';
+import {
+  ConversationAccessParams,
+  CreateConversationParams,
+} from '../utils/types';
 import { IConversationsService } from './conversations';
+import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
@@ -28,7 +32,7 @@ export class ConversationsService implements IConversationsService {
       .getMany();
   }
 
-  async findConversationById(id: number): Promise<Conversation> {
+  async findConversationById(id: number) {
     return this.conversationRepository.findOne({
       where: { id },
       relations: ['lastMessageSent', 'creator', 'recipient'],
@@ -37,9 +41,7 @@ export class ConversationsService implements IConversationsService {
 
   async createConversation(user: User, params: CreateConversationParams) {
     const { email } = params;
-
     const recipient = await this.userService.findUser({ email });
-
     if (!recipient)
       throw new HttpException('Recipient not found', HttpStatus.BAD_REQUEST);
     if (user.id === recipient.id)
@@ -70,5 +72,13 @@ export class ConversationsService implements IConversationsService {
     });
 
     return this.conversationRepository.save(conversation);
+  }
+
+  async hasAccess({ conversationId: id, userId }: ConversationAccessParams) {
+    const conversation = await this.findConversationById(id);
+    if (!conversation) throw new ConversationNotFoundException();
+    return (
+      conversation.creator.id === userId || conversation.recipient.id === userId
+    );
   }
 }
