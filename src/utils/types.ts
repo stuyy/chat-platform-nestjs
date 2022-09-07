@@ -125,3 +125,9 @@ export type AccessParams = {
   id: number;
   userId: number;
 };
+
+export type TransferOwnerParams = {
+  userId: number;
+  groupId: number;
+  newOwnerId: number;
+};

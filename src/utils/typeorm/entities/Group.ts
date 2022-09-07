@@ -30,6 +30,10 @@ export class Group {
   @JoinColumn()
   creator: User;
 
+  @OneToOne(() => User, { createForeignKeyConstraints: false })
+  @JoinColumn()
+  owner: User;
+
   @OneToMany(() => GroupMessage, (message) => message.group, {
     cascade: ['insert', 'remove', 'update'],
   })
