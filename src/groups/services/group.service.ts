@@ -43,6 +43,7 @@ export class GroupService implements IGroupService {
       .where('user.id IN (:users)', { users: [params.userId] })
       .leftJoinAndSelect('group.users', 'users')
       .leftJoinAndSelect('group.creator', 'creator')
+      .leftJoinAndSelect('group.owner', 'owner')
       .getMany();
   }
 
