@@ -7,6 +7,7 @@ import { Services } from '../../utils/constants';
 import { Group, User } from '../../utils/typeorm';
 import {
   AccessParams,
+  CheckUserGroupParams,
   CreateGroupParams,
   FetchGroupsParams,
   TransferOwnerParams,
