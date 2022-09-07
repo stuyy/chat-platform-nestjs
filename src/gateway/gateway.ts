@@ -47,6 +47,7 @@ export class MessagingGateway
   handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
     console.log('Incoming Connection');
     this.sessions.setUserSocket(socket.user.id, socket);
+    console.log(this.sessions.getSockets());
     socket.emit('connected', {});
   }
 
@@ -262,7 +263,19 @@ export class MessagingGateway
   @OnEvent('group.owner.update')
   handleGroupOwnerUpdate(payload: Group) {
     const ROOM_NAME = `group-${payload.id}`;
+    const newOwnerSocket = this.sessions.getUserSocket(payload.owner.id);
     console.log('Inside group.owner.update');
+    const { rooms } = this.server.sockets.adapter;
+    console.log(rooms.get(ROOM_NAME));
+    const socketsInRoom = rooms.get(ROOM_NAME);
+    console.log('Sockets In Room');
+    console.log(socketsInRoom);
+    console.log(newOwnerSocket);
+    // Check if the new owner is in the group (room)
     this.server.to(ROOM_NAME).emit('onGroupOwnerUpdate', payload);
+    if (newOwnerSocket && !socketsInRoom.has(newOwnerSocket.id)) {
+      console.log('The new owner is not in the room...');
+      newOwnerSocket.emit('onGroupOwnerUpdate', payload);
+    }
   }
 }
