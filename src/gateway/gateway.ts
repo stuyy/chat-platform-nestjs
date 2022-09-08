@@ -283,7 +283,33 @@ export class MessagingGateway
   handleGroupUserLeave(payload) {
     console.log('inside group.user.leave');
     const ROOM_NAME = `group-${payload.group.id}`;
-    console.log(`Room: ${ROOM_NAME}`);
-    this.server.to(ROOM_NAME).emit('onGroupParticipantLeft', payload);
+    const { rooms } = this.server.sockets.adapter;
+    const socketsInRoom = rooms.get(ROOM_NAME);
+    const leftUserSocket = this.sessions.getUserSocket(payload.userId);
+    /**
+     * If socketsInRoom is undefined, this means that there is
+     * no one connected to the room. So just emit the event for
+     * the connected user if they are online.
+     */
+    console.log(socketsInRoom);
+    console.log(leftUserSocket);
+    if (leftUserSocket && socketsInRoom) {
+      console.log('user is online, at least 1 person is in the room');
+      if (socketsInRoom.has(leftUserSocket.id)) {
+        console.log('User is in room... room set has socket id');
+        return this.server
+          .to(ROOM_NAME)
+          .emit('onGroupParticipantLeft', payload);
+      } else {
+        console.log('User is not in room, but someone is there');
+        leftUserSocket.emit('onGroupParticipantLeft', payload);
+        this.server.to(ROOM_NAME).emit('onGroupParticipantLeft', payload);
+        return;
+      }
+    }
+    if (leftUserSocket && !socketsInRoom) {
+      console.log('User is online but there are no sockets in the room');
+      return leftUserSocket.emit('onGroupParticipantLeft', payload);
+    }
   }
 }
