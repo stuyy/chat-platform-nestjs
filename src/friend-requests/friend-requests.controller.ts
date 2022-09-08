@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -41,5 +42,13 @@ export class FriendRequestController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.friendRequestService.accept({ id, userId });
+  }
+
+  @Delete(':id/cancel')
+  cancelFriendRequest(
+    @AuthUser() { id: userId }: User,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.friendRequestService.cancel({ id, userId });
   }
 }

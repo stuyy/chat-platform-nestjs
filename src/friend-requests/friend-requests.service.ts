@@ -6,7 +6,11 @@ import { IUserService } from '../users/user';
 import { Services } from '../utils/constants';
 import { FriendRequest } from '../utils/typeorm';
 import { Friend } from '../utils/typeorm/entities/Friend';
-import { CreateFriendParams, FriendRequestParams } from '../utils/types';
+import {
+  CancelFriendRequestParams,
+  CreateFriendParams,
+  FriendRequestParams,
+} from '../utils/types';
 import { FriendRequestException } from './exceptions/FriendRequest';
 import { FriendRequestAcceptedException } from './exceptions/FriendRequestAccepted';
 import { FriendRequestNotFoundException } from './exceptions/FriendRequestNotFound';
@@ -33,6 +37,13 @@ export class FriendRequestService implements IFriendRequestService {
       ],
       relations: ['receiver', 'sender'],
     });
+  }
+
+  async cancel({ id, userId }: CancelFriendRequestParams) {
+    const friendRequest = await this.findById(id);
+    if (!friendRequest) throw new FriendRequestNotFoundException();
+    if (friendRequest.sender.id !== userId) throw new FriendRequestException();
+    return this.friendRequestRepository.delete(id);
   }
 
   async create({ user: sender, email }: CreateFriendParams) {

@@ -153,3 +153,8 @@ export type FriendRequestParams = {
   id: number;
   userId: number;
 };
+
+export type CancelFriendRequestParams = {
+  id: number;
+  userId: number;
+};
