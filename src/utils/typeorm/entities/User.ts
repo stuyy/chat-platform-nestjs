@@ -7,7 +7,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Friend } from './Friend';
 import { Group } from './Group';
 import { Message } from './Message';
 

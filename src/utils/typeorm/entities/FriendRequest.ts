@@ -1,14 +1,16 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { FriendRequestStatus } from '../../types';
 import { User } from './User';
 
-@Entity({ name: 'friends' })
-export class Friend {
+@Entity({ name: 'friend_requests' })
+export class FriendRequest {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,4 +24,7 @@ export class Friend {
 
   @CreateDateColumn()
   createdAt: number;
+
+  @Column()
+  status: FriendRequestStatus;
 }

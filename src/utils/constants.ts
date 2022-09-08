@@ -7,6 +7,7 @@ export enum Routes {
   GROUP_MESSAGES = 'groups/:id/messages',
   GROUP_RECIPIENTS = 'groups/:id/recipients',
   FRIENDS = 'friends',
+  FRIEND_REQUESTS = 'friends/requests',
 }
 
 export enum Services {
@@ -19,4 +20,5 @@ export enum Services {
   GROUP_MESSAGES = 'GROUP_MESSAGES_SERVICE',
   GROUP_RECIPIENTS = 'GROUP_RECIPIENTS_SERVICE',
   FRIENDS_SERVICE = 'FRIENDS_SERVICE',
+  FRIENDS_REQUESTS_SERVICE = 'FRIEND_REQUEST_SERVICE',
 }
