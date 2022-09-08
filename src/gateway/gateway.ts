@@ -47,7 +47,6 @@ export class MessagingGateway
   handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
     console.log('Incoming Connection');
     this.sessions.setUserSocket(socket.user.id, socket);
-    console.log(this.sessions.getSockets());
     socket.emit('connected', {});
   }
 

@@ -12,6 +12,7 @@ import entities from './utils/typeorm';
 import { GroupModule } from './groups/group.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { APP_GUARD } from '@nestjs/core';
     GatewayModule,
     EventEmitterModule.forRoot(),
     GroupModule,
+    FriendsModule,
     // ThrottlerModule.forRoot({
     //   ttl: 60,
     //   limit: 10,
