@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IUserService } from '../users/user';
 import { Services } from '../utils/constants';
-import { Conversation, User } from '../utils/typeorm';
+import { Conversation, Message, User } from '../utils/typeorm';
 import { AccessParams, CreateConversationParams } from '../utils/types';
 import { IConversationsService } from './conversations';
 import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
@@ -13,6 +13,8 @@ export class ConversationsService implements IConversationsService {
   constructor(
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
     @Inject(Services.USERS)
     private readonly userService: IUserService,
   ) {}
@@ -36,8 +38,23 @@ export class ConversationsService implements IConversationsService {
     });
   }
 
+  async isCreated(userId: number, recipientId: number) {
+    return this.conversationRepository.findOne({
+      where: [
+        {
+          creator: { id: userId },
+          recipient: { id: recipientId },
+        },
+        {
+          creator: { id: recipientId },
+          recipient: { id: userId },
+        },
+      ],
+    });
+  }
+
   async createConversation(user: User, params: CreateConversationParams) {
-    const { email } = params;
+    const { email, message: content } = params;
     const recipient = await this.userService.findUser({ email });
     if (!recipient)
       throw new HttpException('Recipient not found', HttpStatus.BAD_REQUEST);
@@ -46,29 +63,20 @@ export class ConversationsService implements IConversationsService {
         'Cannot Create Conversation',
         HttpStatus.BAD_REQUEST,
       );
-
-    const existingConversation = await this.conversationRepository.findOne({
-      where: [
-        {
-          creator: { id: user.id },
-          recipient: { id: recipient.id },
-        },
-        {
-          creator: { id: recipient.id },
-          recipient: { id: user.id },
-        },
-      ],
-    });
-
+    const existingConversation = await this.isCreated(user.id, recipient.id);
     if (existingConversation)
       throw new HttpException('Conversation exists', HttpStatus.CONFLICT);
-
     const conversation = this.conversationRepository.create({
       creator: user,
       recipient: recipient,
     });
-
-    return this.conversationRepository.save(conversation);
+    const savedConversation = await this.conversationRepository.save(
+      conversation,
+    );
+    const messageParams = { content, conversation, author: user };
+    const message = this.messageRepository.create(messageParams);
+    const savedMessage = await this.messageRepository.save(message);
+    return savedConversation;
   }
 
   async hasAccess({ id, userId }: AccessParams) {
