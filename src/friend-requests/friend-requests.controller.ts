@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Inject,
   Param,
   ParseIntPipe,
@@ -19,6 +20,11 @@ export class FriendRequestController {
     @Inject(Services.FRIENDS_REQUESTS_SERVICE)
     private readonly friendRequestService: IFriendRequestService,
   ) {}
+
+  @Get()
+  getFriendRequests(@AuthUser() user: User) {
+    return this.friendRequestService.getFriendRequests(user.id);
+  }
 
   @Post()
   createFriendRequest(

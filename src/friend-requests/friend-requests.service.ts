@@ -24,6 +24,17 @@ export class FriendRequestService implements IFriendRequestService {
     private readonly userService: IUserService,
   ) {}
 
+  getFriendRequests(id: number): Promise<FriendRequest[]> {
+    const status = 'pending';
+    return this.friendRequestRepository.find({
+      where: [
+        { sender: { id }, status },
+        { receiver: { id }, status },
+      ],
+      relations: ['receiver', 'sender'],
+    });
+  }
+
   async create({ user: sender, email }: CreateFriendParams) {
     const receiver = await this.userService.findUser({ email });
     if (!receiver) throw new UserNotFoundException();
