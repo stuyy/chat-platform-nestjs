@@ -147,7 +147,7 @@ export type CreateFriendParams = {
   email: string;
 };
 
-export type FriendRequestStatus = 'accepted' | 'pending';
+export type FriendRequestStatus = 'accepted' | 'pending' | 'rejected';
 
 export type FriendRequestParams = {
   id: number;

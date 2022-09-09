@@ -51,4 +51,12 @@ export class FriendRequestController {
   ) {
     return this.friendRequestService.cancel({ id, userId });
   }
+
+  @Patch(':id/reject')
+  rejectFriendRequest(
+    @AuthUser() { id: userId }: User,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.friendRequestService.reject({ id, userId });
+  }
 }
