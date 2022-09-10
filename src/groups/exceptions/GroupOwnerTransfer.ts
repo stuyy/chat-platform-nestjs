@@ -4,7 +4,7 @@ export class GroupOwnerTransferException extends HttpException {
   constructor(msg?: string) {
     const defaultMessage = 'Group Owner Transfer Exception';
     const errorMessage = msg
-      ? defaultMessage.concat(': ', defaultMessage)
+      ? defaultMessage.concat(': ', msg)
       : defaultMessage;
     super(errorMessage, HttpStatus.BAD_REQUEST);
   }

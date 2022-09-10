@@ -52,6 +52,8 @@ export class FriendRequestService implements IFriendRequestService {
     if (!receiver) throw new UserNotFoundException();
     const exists = await this.isPending(sender.id, receiver.id);
     if (exists) throw new FriendRequestPending();
+    if (receiver.id === sender.id)
+      throw new FriendRequestException('Cannot Add Yourself');
     const friend = this.friendRequestRepository.create({
       sender,
       receiver,
