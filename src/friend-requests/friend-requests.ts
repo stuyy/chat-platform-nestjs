@@ -7,7 +7,7 @@ import {
 
 export interface IFriendRequestService {
   create(params: CreateFriendParams);
-  cancel(params: CancelFriendRequestParams);
+  cancel(params: CancelFriendRequestParams): Promise<FriendRequest>;
   reject(params: CancelFriendRequestParams);
   getFriendRequests(userId: number): Promise<FriendRequest[]>;
   isPending(userOneId: number, userTwoId: number);

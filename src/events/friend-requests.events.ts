@@ -13,6 +13,15 @@ export class FriendRequestsEvents {
     const receiverSocket = this.gateway.sessions.getUserSocket(
       payload.receiver.id,
     );
-    if (receiverSocket) receiverSocket.emit('onFriendRequestReceived', payload);
+    receiverSocket && receiverSocket.emit('onFriendRequestReceived', payload);
+  }
+
+  @OnEvent('friendrequest.cancel')
+  handleFriendRequestCancel(payload: FriendRequest) {
+    console.log('friendrequest.cancel');
+    const receiverSocket = this.gateway.sessions.getUserSocket(
+      payload.receiver.id,
+    );
+    receiverSocket && receiverSocket.emit('onFriendRequestCancelled', payload);
   }
 }
