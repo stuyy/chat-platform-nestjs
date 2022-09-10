@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagingGateway } from '../gateway/gateway';
+import { ServerEvents, WebsocketEvents } from '../utils/constants';
 import { FriendRequest } from '../utils/typeorm';
+import { AcceptFriendRequestResponse } from '../utils/types';
 
 @Injectable()
 export class FriendRequestsEvents {
@@ -23,5 +25,15 @@ export class FriendRequestsEvents {
       payload.receiver.id,
     );
     receiverSocket && receiverSocket.emit('onFriendRequestCancelled', payload);
+  }
+
+  @OnEvent(ServerEvents.FRIEND_REQUEST_ACCEPTED)
+  handleFriendRequestAccepted(payload: AcceptFriendRequestResponse) {
+    console.log(ServerEvents.FRIEND_REQUEST_ACCEPTED);
+    const senderSocket = this.gateway.sessions.getUserSocket(
+      payload.friendRequest.sender.id,
+    );
+    senderSocket &&
+      senderSocket.emit(WebsocketEvents.FRIEND_REQUEST_ACCEPTED, payload);
   }
 }
