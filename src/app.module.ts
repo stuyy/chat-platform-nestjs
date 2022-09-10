@@ -43,7 +43,7 @@ import { ThrottlerBehindProxyGuard } from './utils/throttler';
     FriendsModule,
     EventsModule,
     ThrottlerModule.forRoot({
-      ttl: 60,
+      ttl: 30,
       limit: 10,
     }),
   ],

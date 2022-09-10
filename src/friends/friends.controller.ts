@@ -6,11 +6,13 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
 import { User } from '../utils/typeorm';
 import { IFriendsService } from './friends';
 
+@SkipThrottle()
 @Controller(Routes.FRIENDS)
 export class FriendsController {
   constructor(
