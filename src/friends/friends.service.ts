@@ -33,6 +33,7 @@ export class FriendsService implements IFriendsService {
     console.log(friend);
     if (friend.receiver.id !== userId && friend.sender.id !== userId)
       throw new DeleteFriendException();
-    return this.friendsRepository.delete(id);
+    await this.friendsRepository.delete(id);
+    return friend;
   }
 }
