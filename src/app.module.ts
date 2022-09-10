@@ -16,6 +16,7 @@ import { FriendRequestsModule } from './friend-requests/friend-requests.module';
 import { FriendsModule } from './friends/friends.module';
 import { EventsModule } from './events/events.module';
 import { ThrottlerBehindProxyGuard } from './utils/throttler';
+import { ExistsModule } from './exists/exists.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ThrottlerBehindProxyGuard } from './utils/throttler';
     FriendRequestsModule,
     FriendsModule,
     EventsModule,
+    ExistsModule,
     ThrottlerModule.forRoot({
       ttl: 30,
       limit: 10,

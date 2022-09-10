@@ -6,6 +6,7 @@ export enum Routes {
   GROUPS = 'groups',
   GROUP_MESSAGES = 'groups/:id/messages',
   GROUP_RECIPIENTS = 'groups/:id/recipients',
+  EXISTS = 'exists',
   FRIENDS = 'friends',
   FRIEND_REQUESTS = 'friends/requests',
 }
