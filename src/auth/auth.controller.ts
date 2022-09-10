@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { instanceToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
 import { IUserService } from '../users/user';
@@ -24,6 +25,7 @@ export class AuthController {
     @Inject(Services.USERS) private userService: IUserService,
   ) {}
 
+  @Throttle(1, 60)
   @Post('register')
   async registerUser(@Body() createUserDto: CreateUserDto) {
     return instanceToPlain(await this.userService.createUser(createUserDto));
