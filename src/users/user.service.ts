@@ -31,7 +31,13 @@ export class UserService implements IUserService {
     params: FindUserParams,
     options?: FindUserOptions,
   ): Promise<User> {
-    const selections: (keyof User)[] = ['email', 'firstName', 'lastName', 'id'];
+    const selections: (keyof User)[] = [
+      'email',
+      'firstName',
+      'lastName',
+      'id',
+      'profile',
+    ];
     const selectionsWithPassword: (keyof User)[] = [...selections, 'password'];
     return this.userRepository.findOne(params, {
       select: options?.selectAll ? selectionsWithPassword : selections,
@@ -48,7 +54,13 @@ export class UserService implements IUserService {
       .createQueryBuilder('user')
       .where(statement, { query: `%${query}%` })
       .limit(10)
-      .select(['user.firstName', 'user.lastName', 'user.email', 'user.id'])
+      .select([
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'user.id',
+        'user.profile',
+      ])
       .getMany();
   }
 }

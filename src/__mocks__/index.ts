@@ -1,6 +1,6 @@
 import { User } from '../utils/typeorm';
 
-export const mockUser: User = {
+export const mockUser = {
   id: 4444000455,
   email: 'test@test.com',
   firstName: 'Test',
@@ -8,4 +8,4 @@ export const mockUser: User = {
   password: 'djiasdhjdgdhjasd',
   messages: [],
   groups: [],
-};
+} as User;
