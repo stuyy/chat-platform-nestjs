@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SkipThrottle } from '@nestjs/throttler';
 import { AuthenticatedGuard } from '../auth/utils/Guards';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
@@ -40,11 +41,13 @@ export class ConversationsController {
   }
 
   @Get()
+  @SkipThrottle()
   async getConversations(@AuthUser() { id }: User) {
     return this.conversationsService.getConversations(id);
   }
 
   @Get(':id')
+  @SkipThrottle()
   async getConversationById(@Param('id') id: number) {
     const conversation = await this.conversationsService.findConversationById(
       id,

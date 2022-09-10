@@ -150,7 +150,6 @@ export class MessagingGateway
   @OnEvent('message.create')
   handleMessageCreateEvent(payload: CreateMessageResponse) {
     console.log('Inside message.create');
-    console.log(payload);
     const {
       author,
       conversation: { creator, recipient },
@@ -163,15 +162,12 @@ export class MessagingGateway
         : this.sessions.getUserSocket(creator.id);
 
     if (authorSocket) authorSocket.emit('onMessage', payload);
-    console.log(authorSocket);
-    console.log(recipientSocket);
     if (recipientSocket) recipientSocket.emit('onMessage', payload);
   }
 
   @OnEvent('conversation.create')
   handleConversationCreateEvent(payload: Conversation) {
     console.log('Inside conversation.create');
-    console.log(payload.recipient);
     const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
     if (recipientSocket) recipientSocket.emit('onConversation', payload);
   }
