@@ -13,6 +13,5 @@ export interface IFriendRequestService {
   reject(params: CancelFriendRequestParams): Promise<FriendRequest>;
   getFriendRequests(userId: number): Promise<FriendRequest[]>;
   isPending(userOneId: number, userTwoId: number);
-  isFriends(userOneId: number, userTwoId: number);
   findById(id: number): Promise<FriendRequest>;
 }

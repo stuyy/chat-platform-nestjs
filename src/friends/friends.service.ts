@@ -36,4 +36,19 @@ export class FriendsService implements IFriendsService {
     await this.friendsRepository.delete(id);
     return friend;
   }
+
+  isFriends(userOneId: number, userTwoId: number) {
+    return this.friendsRepository.findOne({
+      where: [
+        {
+          sender: { id: userOneId },
+          receiver: { id: userTwoId },
+        },
+        {
+          sender: { id: userTwoId },
+          receiver: { id: userOneId },
+        },
+      ],
+    });
+  }
 }
