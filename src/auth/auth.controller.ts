@@ -14,6 +14,8 @@ import { instanceToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
 import { IUserService } from '../users/interfaces/user';
 import { Routes, Services } from '../utils/constants';
+import { AuthUser } from '../utils/decorators';
+import { User } from '../utils/typeorm';
 import { IAuthService } from './auth';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { AuthenticatedGuard, LocalAuthGuard } from './utils/Guards';
@@ -38,7 +40,7 @@ export class AuthController {
 
   @Get('status')
   @UseGuards(AuthenticatedGuard)
-  status(@Req() req: Request, @Res() res: Response) {
+  async status(@Req() req: Request, @Res() res: Response) {
     res.send(req.user);
   }
 

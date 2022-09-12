@@ -1,6 +1,7 @@
+import { User } from '../../utils/typeorm';
 import { UpdateUserProfileParams } from '../../utils/types';
 
 export interface IUserProfile {
-  findProfile();
-  updateProfile(params: UpdateUserProfileParams);
+  createProfile();
+  updateProfile(user: User, params: UpdateUserProfileParams);
 }

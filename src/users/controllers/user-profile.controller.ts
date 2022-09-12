@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Routes, Services, UserProfileFileFields } from '../../utils/constants';
+import { AuthUser } from '../../utils/decorators';
+import { User } from '../../utils/typeorm';
 import { UpdateUserProfileParams, UserProfileFiles } from '../../utils/types';
 import { UpdateUserProfileDto } from '../dtos/UpdateUserProfile.dto';
 import { IUserProfile } from '../interfaces/user-profile';
@@ -22,6 +24,7 @@ export class UserProfilesController {
   @Patch()
   @UseInterceptors(FileFieldsInterceptor(UserProfileFileFields))
   async updateUserProfile(
+    @AuthUser() user: User,
     @UploadedFiles()
     files: UserProfileFiles,
     @Body() updateUserProfileDto: UpdateUserProfileDto,
@@ -31,6 +34,6 @@ export class UserProfilesController {
     updateUserProfileDto.about && (params.about = updateUserProfileDto.about);
     files.banner && (params.banner = files.banner[0]);
     files.avatar && (params.avatar = files.avatar[0]);
-    await this.userProfileService.updateProfile(params);
+    return this.userProfileService.updateProfile(user, params);
   }
 }

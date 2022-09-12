@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { IImageStorage } from '../../image-storage/image-storage';
 import { Services } from '../../utils/constants';
 import { generateUUIDV4 } from '../../utils/helpers';
-import { Profile } from '../../utils/typeorm';
+import { Profile, User } from '../../utils/typeorm';
 import { UpdateUserProfileParams } from '../../utils/types';
 import { IUserProfile } from '../interfaces/user-profile';
 
@@ -13,25 +13,40 @@ export class UserProfileService implements IUserProfile {
   constructor(
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @Inject(Services.IMAGE_UPLOAD_SERVICE)
     private readonly imageStorageService: IImageStorage,
   ) {}
 
-  findProfile() {
-    throw new Error('Method not implemented.');
+  createProfile() {
+    const newProfile = this.profileRepository.create();
+    return this.profileRepository.save(newProfile);
   }
 
-  async updateProfile(params: UpdateUserProfileParams) {
+  async updateProfile(user: User, params: UpdateUserProfileParams) {
     console.log('Update Profile');
     console.log(params);
+    if (user.profile) {
+      const key = await this.updateProfileBanner(params);
+      user.profile.banner = key;
+      await this.profileRepository.save(user.profile);
+      return this.userRepository.save(user);
+    }
+    const key = await this.updateProfileBanner(params);
+    user.profile = await this.createProfile();
+    user.profile.banner = key;
+    return this.userRepository.save(user);
+  }
+
+  async updateProfileBanner(params: UpdateUserProfileParams) {
     if (params.banner) {
       const key = generateUUIDV4();
-      await this.imageStorageService.uploadBanner({ key, file: params.banner });
-    }
-    if (params.avatar) {
-      this.imageStorageService.uploadProfilePicture();
-    }
-    if (params.about) {
+      await this.imageStorageService.uploadBanner({
+        key,
+        file: params.banner,
+      });
+      return key;
     }
   }
 }

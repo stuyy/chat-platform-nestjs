@@ -12,6 +12,9 @@ export class Profile {
   @Column({ nullable: true })
   avatar?: string;
 
+  @Column({ nullable: true })
+  banner?: string;
+
   @OneToOne(() => User)
   user: User;
 }

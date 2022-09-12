@@ -37,11 +37,11 @@ export class UserService implements IUserService {
       'firstName',
       'lastName',
       'id',
-      'profile',
     ];
     const selectionsWithPassword: (keyof User)[] = [...selections, 'password'];
     return this.userRepository.findOne(params, {
       select: options?.selectAll ? selectionsWithPassword : selections,
+      relations: ['profile'],
     });
   }
 
