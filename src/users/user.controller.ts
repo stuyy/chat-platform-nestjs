@@ -13,6 +13,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Routes, Services } from '../utils/constants';
 import { UserProfileDto } from './dtos/UserProfile.dto';
+import { UserAlreadyExists } from './exceptions/UserAlreadyExists';
+import { UserNotFoundException } from './exceptions/UserNotFound';
 import { IUserService } from './user';
 
 @Controller(Routes.USERS)
@@ -37,5 +39,14 @@ export class UsersController {
   ) {
     console.log(file);
     console.log(userProfileDto.about, userProfileDto.username);
+  }
+
+  @Get('check')
+  async checkUsername(@Query('username') username: string) {
+    if (!username)
+      throw new HttpException('Invalid Query', HttpStatus.BAD_REQUEST);
+    const user = await this.userService.findUser({ username });
+    if (user) throw new UserAlreadyExists();
+    return HttpStatus.OK;
   }
 }

@@ -18,7 +18,7 @@ export class UserService implements IUserService {
 
   async createUser(userDetails: CreateUserDetails) {
     const existingUser = await this.userRepository.findOne({
-      email: userDetails.email,
+      username: userDetails.username,
     });
     if (existingUser)
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -33,6 +33,7 @@ export class UserService implements IUserService {
   ): Promise<User> {
     const selections: (keyof User)[] = [
       'email',
+      'username',
       'firstName',
       'lastName',
       'id',
