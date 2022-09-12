@@ -1,20 +1,13 @@
 import {
-  Body,
   Controller,
   Get,
   HttpException,
   HttpStatus,
   Inject,
-  Post,
   Query,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Routes, Services } from '../utils/constants';
-import { UserProfileDto } from './dtos/UserProfile.dto';
 import { UserAlreadyExists } from './exceptions/UserAlreadyExists';
-import { UserNotFoundException } from './exceptions/UserNotFound';
 import { IUserService } from './user';
 
 @Controller(Routes.USERS)
@@ -29,16 +22,6 @@ export class UsersController {
     if (!query)
       throw new HttpException('Provide a valid query', HttpStatus.BAD_REQUEST);
     return this.userService.searchUsers(query);
-  }
-
-  @Post('profiles')
-  @UseInterceptors(FileInterceptor('file'))
-  async completeProfile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() userProfileDto: UserProfileDto,
-  ) {
-    console.log(file);
-    console.log(userProfileDto.about, userProfileDto.username);
   }
 
   @Get('check')

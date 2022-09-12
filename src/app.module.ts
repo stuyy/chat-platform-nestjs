@@ -45,7 +45,7 @@ import { ExistsModule } from './exists/exists.module';
     EventsModule,
     ExistsModule,
     ThrottlerModule.forRoot({
-      ttl: 30,
+      ttl: 10,
       limit: 10,
     }),
   ],
