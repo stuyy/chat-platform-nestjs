@@ -17,7 +17,7 @@ export type CreateUserDetails = {
 };
 
 export type ValidateUserDetails = {
-  email: string;
+  username: string;
   password: string;
 };
 

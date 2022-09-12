@@ -13,7 +13,7 @@ export class AuthService implements IAuthService {
 
   async validateUser(userDetails: ValidateUserDetails) {
     const user = await this.userService.findUser(
-      { email: userDetails.email },
+      { username: userDetails.username },
       { selectAll: true },
     );
     console.log(user);
