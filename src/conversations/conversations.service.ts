@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IUserService } from '../users/user';
+import { IUserService } from '../users/interfaces/user';
 import { Services } from '../utils/constants';
 import { Conversation, Message, User } from '../utils/typeorm';
 import { AccessParams, CreateConversationParams } from '../utils/types';

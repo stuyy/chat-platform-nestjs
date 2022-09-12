@@ -12,7 +12,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { instanceToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
-import { IUserService } from '../users/user';
+import { IUserService } from '../users/interfaces/user';
 import { Routes, Services } from '../utils/constants';
 import { IAuthService } from './auth';
 import { CreateUserDto } from './dtos/CreateUser.dto';

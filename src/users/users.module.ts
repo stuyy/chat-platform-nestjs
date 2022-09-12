@@ -1,23 +1,33 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Services } from '../utils/constants';
-import { User } from '../utils/typeorm';
-import { UsersController } from './user.controller';
-import { UserService } from './user.service';
+import { Profile, User } from '../utils/typeorm';
+import { UserProfilesController } from './controllers/user-profile.controller';
+import { UsersController } from './controllers/user.controller';
+import { UserProfileService } from './services/user-profile.service';
+import { UserService } from './services/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  controllers: [UsersController],
+  imports: [TypeOrmModule.forFeature([User, Profile])],
+  controllers: [UsersController, UserProfilesController],
   providers: [
     {
       provide: Services.USERS,
       useClass: UserService,
+    },
+    {
+      provide: Services.USERS_PROFILES,
+      useClass: UserProfileService,
     },
   ],
   exports: [
     {
       provide: Services.USERS,
       useClass: UserService,
+    },
+    {
+      provide: Services.USERS_PROFILES,
+      useClass: UserProfileService,
     },
   ],
 })

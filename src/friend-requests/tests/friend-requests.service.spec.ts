@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IUserService } from '../../users/user';
-import { UserService } from '../../users/user.service';
+import { IUserService } from '../../users/interfaces/user';
+import { UserService } from '../../users/services/user.service';
 import { Services } from '../../utils/constants';
 import { Friend, FriendRequest } from '../../utils/typeorm';
 import { FriendRequestException } from '../exceptions/FriendRequest';

@@ -6,9 +6,9 @@ import {
   Inject,
   Query,
 } from '@nestjs/common';
-import { Routes, Services } from '../utils/constants';
-import { UserAlreadyExists } from './exceptions/UserAlreadyExists';
-import { IUserService } from './user';
+import { Routes, Services } from '../../utils/constants';
+import { UserAlreadyExists } from '../exceptions/UserAlreadyExists';
+import { IUserService } from '../interfaces/user';
 
 @Controller(Routes.USERS)
 export class UsersController {

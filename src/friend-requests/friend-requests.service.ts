@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { FriendAlreadyExists } from '../friends/exceptions/FriendAlreadyExists';
 import { IFriendsService } from '../friends/friends';
 import { UserNotFoundException } from '../users/exceptions/UserNotFound';
-import { IUserService } from '../users/user';
+import { IUserService } from '../users/interfaces/user';
 import { Services } from '../utils/constants';
 import { FriendRequest } from '../utils/typeorm';
 import { Friend } from '../utils/typeorm/entities/Friend';
