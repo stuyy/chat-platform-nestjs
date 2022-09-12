@@ -32,7 +32,7 @@ export type FindUserOptions = Partial<{
 }>;
 
 export type CreateConversationParams = {
-  email: string;
+  username: string;
   message: string;
 };
 
@@ -110,7 +110,7 @@ export type DeleteGroupMessageParams = {
 
 export type AddGroupRecipientParams = {
   id: number;
-  email: string;
+  username: string;
   userId: number;
 };
 
@@ -153,7 +153,7 @@ export type CheckUserGroupParams = {
 
 export type CreateFriendParams = {
   user: User;
-  email: string;
+  username: string;
 };
 
 export type FriendRequestStatus = 'accepted' | 'pending' | 'rejected';

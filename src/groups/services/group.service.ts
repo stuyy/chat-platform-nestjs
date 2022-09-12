@@ -7,7 +7,6 @@ import { Services } from '../../utils/constants';
 import { Group, User } from '../../utils/typeorm';
 import {
   AccessParams,
-  CheckUserGroupParams,
   CreateGroupParams,
   FetchGroupsParams,
   TransferOwnerParams,
@@ -27,8 +26,8 @@ export class GroupService implements IGroupService {
 
   async createGroup(params: CreateGroupParams) {
     const { creator, title } = params;
-    const usersPromise = params.users.map((email) =>
-      this.userService.findUser({ email }),
+    const usersPromise = params.users.map((username) =>
+      this.userService.findUser({ username }),
     );
     const users = (await Promise.all(usersPromise)).filter((user) => user);
     users.push(creator);

@@ -41,7 +41,7 @@ export class ExistsController {
     const newConversation = await this.conversationsService.createConversation(
       user,
       {
-        email: recipient.email,
+        username: recipient.username,
         message: 'hello',
       },
     );
