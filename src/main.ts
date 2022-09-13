@@ -20,7 +20,6 @@ async function bootstrap() {
   app.enableCors({ origin: ['http://localhost:3000'], credentials: true });
   app.useGlobalPipes(new ValidationPipe());
   app.set('trust proxy', 'loopback');
-
   app.use(
     session({
       secret: COOKIE_SECRET,
@@ -38,7 +37,12 @@ async function bootstrap() {
   app.use(passport.session());
 
   try {
-    await app.listen(PORT, () => console.log(`Running on Port ${PORT}`));
+    await app.listen(PORT, () => {
+      console.log(`Running on Port ${PORT}`);
+      console.log(
+        `Running in ${process.env.ENVIRONMENT} mode: ${process.env.ENVIRONMENT_MESSAGE}`,
+      );
+    });
   } catch (err) {
     console.log(err);
   }
