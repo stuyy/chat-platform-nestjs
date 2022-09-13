@@ -24,29 +24,38 @@ export class UserProfileService implements IUserProfile {
     return this.profileRepository.save(newProfile);
   }
 
-  async updateProfile(user: User, params: UpdateUserProfileParams) {
-    console.log('Update Profile');
-    console.log(params);
-    if (user.profile) {
-      const key = await this.updateProfileBanner(params);
-      user.profile.banner = key;
-      await this.profileRepository.save(user.profile);
-      return this.userRepository.save(user);
+  async createProfileOrUpdate(user: User, params: UpdateUserProfileParams) {
+    console.log('CreateProfileOrUpdate');
+    if (!user.profile) {
+      console.log('User has no profile. Creating...');
+      user.profile = await this.createProfile();
+      return this.updateProfile(user, params);
     }
-    const key = await this.updateProfileBanner(params);
-    user.profile = await this.createProfile();
-    user.profile.banner = key;
+    console.log('User has profile');
+    return this.updateProfile(user, params);
+  }
+
+  async updateProfile(user: User, params: UpdateUserProfileParams) {
+    console.log(params);
+    if (params.avatar)
+      user.profile.avatar = await this.updateAvatar(params.avatar);
+    if (params.banner)
+      user.profile.banner = await this.updateBanner(params.banner);
+    if (params.about) user.profile.about = params.about;
     return this.userRepository.save(user);
   }
 
-  async updateProfileBanner(params: UpdateUserProfileParams) {
-    if (params.banner) {
-      const key = generateUUIDV4();
-      await this.imageStorageService.uploadBanner({
-        key,
-        file: params.banner,
-      });
-      return key;
-    }
+  async updateBanner(file: Express.Multer.File) {
+    console.log('Updating Banner');
+    const key = generateUUIDV4();
+    await this.imageStorageService.uploadBanner({ key, file });
+    return key;
+  }
+
+  async updateAvatar(file: Express.Multer.File) {
+    console.log('Updating Avatar');
+    const key = generateUUIDV4();
+    await this.imageStorageService.uploadBanner({ key, file });
+    return key;
   }
 }
