@@ -3,4 +3,5 @@ import { Attachment } from '../utils/types';
 
 export interface IMessageAttachmentsService {
   create(attachments: Attachment[]): Promise<MessageAttachment[]>;
+  deleteAllAttachments(attachments: MessageAttachment[]);
 }

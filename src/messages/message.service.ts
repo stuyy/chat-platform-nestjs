@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { IConversationsService } from '../conversations/conversations';
 import { ConversationNotFoundException } from '../conversations/exceptions/ConversationNotFound';
 import { IMessageAttachmentsService } from '../message-attachments/message-attachments';
+import { buildFindMessageParams } from '../utils/builders';
 import { Services } from '../utils/constants';
 import { Conversation, Message } from '../utils/typeorm';
 import {
@@ -39,7 +40,7 @@ export class MessageService implements IMessageService {
       author: instanceToPlain(user),
       attachments: params.attachments
         ? await this.messageAttachmentsService.create(params.attachments)
-        : [], 
+        : [],
     });
     const savedMessage = await this.messageRepository.save(message);
     conversation.lastMessageSent = savedMessage;
@@ -60,11 +61,8 @@ export class MessageService implements IMessageService {
     const msgParams = { id: conversationId, limit: 5 };
     const conversation = await this.conversationService.getMessages(msgParams);
     if (!conversation) throw new ConversationNotFoundException();
-    const message = await this.messageRepository.findOne({
-      id: params.messageId,
-      author: { id: params.userId },
-      conversation: { id: params.conversationId },
-    });
+    const findMessageParams = buildFindMessageParams(params);
+    const message = await this.messageRepository.findOne(findMessageParams);
     if (!message) throw new CannotDeleteMessage();
     if (conversation.lastMessageSent.id !== message.id)
       return this.messageRepository.delete({ id: message.id });

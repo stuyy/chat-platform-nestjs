@@ -29,4 +29,11 @@ export class MessageAttachmentsService implements IMessageAttachmentsService {
     });
     return Promise.all(promise);
   }
+
+  deleteAllAttachments(attachments: MessageAttachment[]) {
+    const promise = attachments.map((attachment) =>
+      this.attachmentRepository.delete(attachment.key),
+    );
+    return Promise.all(promise);
+  }
 }

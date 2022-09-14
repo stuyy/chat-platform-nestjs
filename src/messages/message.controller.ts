@@ -71,16 +71,9 @@ export class MessageController {
     @Param('id', ParseIntPipe) conversationId: number,
     @Param('messageId', ParseIntPipe) messageId: number,
   ) {
-    await this.messageService.deleteMessage({
-      userId: user.id,
-      conversationId,
-      messageId,
-    });
-    this.eventEmitter.emit('message.delete', {
-      userId: user.id,
-      messageId,
-      conversationId,
-    });
+    const params = { userId: user.id, conversationId, messageId };
+    await this.messageService.deleteMessage(params);
+    this.eventEmitter.emit('message.delete', params);
     return { conversationId, messageId };
   }
   // api/conversations/:conversationId/messages/:messageId
