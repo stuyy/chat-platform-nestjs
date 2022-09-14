@@ -11,6 +11,7 @@ import {
   EditGroupMessageParams,
 } from '../../utils/types';
 import { IGroupMessageService } from '../interfaces/group-messages';
+import { IMessageAttachmentsService } from '../../message-attachments/message-attachments';
 
 @Injectable()
 export class GroupMessageService implements IGroupMessageService {
@@ -21,6 +22,8 @@ export class GroupMessageService implements IGroupMessageService {
     private readonly groupRepository: Repository<Group>,
     @Inject(Services.GROUPS)
     private readonly groupService: IGroupService,
+    @Inject(Services.MESSAGE_ATTACHMENTS)
+    private readonly messageAttachmentsService: IMessageAttachmentsService,
   ) {}
 
   async createGroupMessage({
@@ -38,6 +41,9 @@ export class GroupMessageService implements IGroupMessageService {
       content,
       group,
       author: instanceToPlain(author),
+      attachments: await this.messageAttachmentsService.createGroupAttachments(
+        params.attachments,
+      ),
     });
     const savedMessage = await this.groupMessageRepository.save(groupMessage);
     group.lastMessageSent = savedMessage;
@@ -48,7 +54,7 @@ export class GroupMessageService implements IGroupMessageService {
   getGroupMessages(id: number): Promise<GroupMessage[]> {
     return this.groupMessageRepository.find({
       where: { group: { id } },
-      relations: ['author'],
+      relations: ['author', 'attachments'],
       order: {
         createdAt: 'DESC',
       },
