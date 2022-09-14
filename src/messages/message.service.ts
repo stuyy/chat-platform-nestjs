@@ -1,7 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
+import { IMessageAttachmentsService } from '../message-attachments/message-attachments';
+import { Services } from '../utils/constants';
 import { Conversation, Message } from '../utils/typeorm';
 import {
   CreateMessageParams,
@@ -17,8 +19,11 @@ export class MessageService implements IMessageService {
     private readonly messageRepository: Repository<Message>,
     @InjectRepository(Conversation)
     private readonly conversationRepository: Repository<Conversation>,
+    @Inject(Services.MESSAGE_ATTACHMENTS)
+    private readonly messageAttachmentsService: IMessageAttachmentsService,
   ) {}
-  async createMessage({ user, content, conversationId }: CreateMessageParams) {
+  async createMessage(params: CreateMessageParams) {
+    const { user, content, conversationId } = params;
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
       relations: ['creator', 'recipient', 'lastMessageSent'],
@@ -26,14 +31,15 @@ export class MessageService implements IMessageService {
     if (!conversation)
       throw new HttpException('Conversation not found', HttpStatus.BAD_REQUEST);
     const { creator, recipient } = conversation;
-    console.log(`User ID: ${user.id}`);
-    console.log(conversation);
     if (creator.id !== user.id && recipient.id !== user.id)
       throw new HttpException('Cannot Create Message', HttpStatus.FORBIDDEN);
     const message = this.messageRepository.create({
       content,
       conversation,
       author: instanceToPlain(user),
+      attachments: params.attachments
+        ? await this.messageAttachmentsService.create(params.attachments)
+        : [],
     });
     const savedMessage = await this.messageRepository.save(message);
     conversation.lastMessageSent = savedMessage;
@@ -45,7 +51,7 @@ export class MessageService implements IMessageService {
 
   getMessagesByConversationId(conversationId: number): Promise<Message[]> {
     return this.messageRepository.find({
-      relations: ['author'],
+      relations: ['author', 'attachments'],
       where: { conversation: { id: conversationId } },
       order: { createdAt: 'DESC' },
     });

@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ImageStorageModule } from '../image-storage/image-storage.module';
+import { MessageAttachmentsModule } from '../message-attachments/message-attachments.module';
 import { Services } from '../utils/constants';
 import { Conversation, Message } from '../utils/typeorm';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message, Conversation])],
+  imports: [
+    TypeOrmModule.forFeature([Message, Conversation]),
+    ImageStorageModule,
+    MessageAttachmentsModule,
+  ],
   controllers: [MessageController],
   providers: [
     {

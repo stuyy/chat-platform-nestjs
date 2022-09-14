@@ -17,6 +17,7 @@ import { FriendsModule } from './friends/friends.module';
 import { EventsModule } from './events/events.module';
 import { ThrottlerBehindProxyGuard } from './utils/throttler';
 import { ExistsModule } from './exists/exists.module';
+import { MessageAttachmentsModule } from './message-attachments/message-attachments.module';
 
 let envFilePath = '.env.development';
 if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production';
@@ -51,6 +52,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production';
       ttl: 10,
       limit: 10,
     }),
+    MessageAttachmentsModule,
   ],
   controllers: [],
   providers: [
