@@ -6,6 +6,7 @@ import {
   UploadImageParams,
   UploadMessageAttachmentParams,
 } from '../utils/types';
+import { compressImage } from '../utils/helpers';
 
 @Injectable()
 export class ImageStorageService implements IImageStorageService {
@@ -25,10 +26,17 @@ export class ImageStorageService implements IImageStorageService {
   }
 
   async uploadMessageAttachment(params: UploadMessageAttachmentParams) {
+    this.spacesClient.putObject({
+      Bucket: 'chuachat',
+      Key: `original/${params.messageAttachment.key}`,
+      Body: params.file.buffer,
+      ACL: 'public-read',
+      ContentType: params.file.mimetype,
+    });
     await this.spacesClient.putObject({
       Bucket: 'chuachat',
-      Key: params.messageAttachment.key,
-      Body: params.file.buffer,
+      Key: `preview/${params.messageAttachment.key}`,
+      Body: await compressImage(params.file),
       ACL: 'public-read',
       ContentType: params.file.mimetype,
     });
