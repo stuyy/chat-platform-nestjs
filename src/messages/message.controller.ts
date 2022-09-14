@@ -43,12 +43,12 @@ export class MessageController {
   async createMessage(
     @AuthUser() user: User,
     @UploadedFiles() { attachments }: { attachments: Attachment[] },
-    @Param('id', ParseIntPipe) conversationId: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body()
     { content }: CreateMessageDto,
   ) {
     if (!attachments && !content) throw new EmptyMessageException();
-    const params = { user, conversationId, content, attachments };
+    const params = { user, id, content, attachments };
     const response = await this.messageService.createMessage(params);
     this.eventEmitter.emit('message.create', response);
     return;

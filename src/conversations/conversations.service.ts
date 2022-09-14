@@ -4,7 +4,12 @@ import { Repository } from 'typeorm';
 import { IUserService } from '../users/interfaces/user';
 import { Services } from '../utils/constants';
 import { Conversation, Message, User } from '../utils/typeorm';
-import { AccessParams, CreateConversationParams } from '../utils/types';
+import {
+  AccessParams,
+  CreateConversationParams,
+  GetConversationMessagesParams,
+  UpdateConversationParams,
+} from '../utils/types';
 import { IConversationsService } from './conversations';
 import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
 
@@ -33,15 +38,15 @@ export class ConversationsService implements IConversationsService {
       .getMany();
   }
 
-  async findConversationById(id: number) {
+  async findById(id: number) {
     return this.conversationRepository.findOne({
       where: { id },
       relations: [
-        'lastMessageSent',
         'creator',
         'recipient',
         'creator.profile',
         'recipient.profile',
+        'lastMessageSent',
       ],
     });
   }
@@ -89,10 +94,33 @@ export class ConversationsService implements IConversationsService {
   }
 
   async hasAccess({ id, userId }: AccessParams) {
-    const conversation = await this.findConversationById(id);
+    const conversation = await this.findById(id);
     if (!conversation) throw new ConversationNotFoundException();
     return (
       conversation.creator.id === userId || conversation.recipient.id === userId
     );
+  }
+
+  save(conversation: Conversation): Promise<Conversation> {
+    return this.conversationRepository.save(conversation);
+  }
+
+  getMessages({
+    id,
+    limit,
+  }: GetConversationMessagesParams): Promise<Conversation> {
+    return this.conversationRepository
+      .createQueryBuilder('conversation')
+      .where('id = :id', { id })
+      .leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
+      .leftJoinAndSelect('conversation.messages', 'message')
+      .where('conversation.id = :id', { id })
+      .orderBy('message.createdAt', 'DESC')
+      .limit(limit)
+      .getOne();
+  }
+
+  update({ id, lastMessageSent }: UpdateConversationParams) {
+    return this.conversationRepository.update(id, { lastMessageSent });
   }
 }

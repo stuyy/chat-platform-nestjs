@@ -52,9 +52,9 @@ export type CreateParticipantParams = {
 };
 
 export type CreateMessageParams = {
+  id: number;
   content?: string;
   attachments?: Attachment[];
-  conversationId: number;
   user: User;
 };
 
@@ -209,3 +209,13 @@ export type UploadMessageAttachmentParams = {
   file: Attachment;
   messageAttachment: MessageAttachment;
 };
+
+export type GetConversationMessagesParams = {
+  id: number;
+  limit: number;
+};
+
+export type UpdateConversationParams = Partial<{
+  id: number;
+  lastMessageSent: Message;
+}>;
