@@ -19,6 +19,7 @@ This is the backend for the [Chat Platform React](https://github.com/stuyy/chat-
    ```
    PORT=
 
+   DB_TYPE=mysql
    MYSQL_DB_HOST=
    MYSQL_DB_USERNAME=
    MYSQL_DB_PASSWORD=
@@ -29,6 +30,7 @@ This is the backend for the [Chat Platform React](https://github.com/stuyy/chat-
    ```
 
    - **`PORT`** The port your server will run on
+   - **`DB_TYPE`** The type of the database you plan to use. By default this will be `mysql`, but if you use another database, adjust as needed.
    - **`MYSQL_DB_HOST`** The hostname for your MySQL database server
    - **`MYSQL_DB_USERNAME`** The username for your MySQL database
    - **`MYSQL_DB_PASSWORD`** The password for your MySQL user account

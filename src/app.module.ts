@@ -29,7 +29,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production';
     ConfigModule.forRoot({ envFilePath }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: process.env.DB_TYPE,
       host: process.env.MYSQL_DB_HOST,
       port: parseInt(process.env.MYSQL_DB_PORT),
       username: process.env.MYSQL_DB_USERNAME,
