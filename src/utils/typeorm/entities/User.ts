@@ -11,6 +11,7 @@ import {
 import { Group } from './Group';
 import { Message } from './Message';
 import { Profile } from './Profile';
+import { UserPresence } from './UserPresence';
 
 @Entity({ name: 'users' })
 export class User {
@@ -43,4 +44,8 @@ export class User {
   @OneToOne(() => Profile, { cascade: ['insert', 'update'] })
   @JoinColumn()
   profile: Profile;
+
+  @OneToOne(() => UserPresence, { cascade: ['insert', 'update'] })
+  @JoinColumn()
+  presence: UserPresence;
 }

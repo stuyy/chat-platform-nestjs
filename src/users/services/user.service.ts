@@ -41,7 +41,7 @@ export class UserService implements IUserService {
     const selectionsWithPassword: (keyof User)[] = [...selections, 'password'];
     return this.userRepository.findOne(params, {
       select: options?.selectAll ? selectionsWithPassword : selections,
-      relations: ['profile'],
+      relations: ['profile', 'presence'],
     });
   }
 

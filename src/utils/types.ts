@@ -232,3 +232,10 @@ export type UpdateConversationParams = Partial<{
   id: number;
   lastMessageSent: Message;
 }>;
+
+export type UserPresenceStatus = 'online' | 'away' | 'offline' | 'dnd';
+
+export type UpdateStatusMessageParams = {
+  user: User;
+  statusMessage: string;
+};
