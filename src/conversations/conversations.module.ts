@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FriendsModule } from '../friends/friends.module';
 import { UsersModule } from '../users/users.module';
 import { Services } from '../utils/constants';
 import { isAuthorized } from '../utils/helpers';
@@ -9,7 +10,11 @@ import { ConversationsService } from './conversations.service';
 import { ConversationMiddleware } from './middlewares/conversation.middleware';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Conversation, Message]), UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Conversation, Message]),
+    UsersModule,
+    FriendsModule,
+  ],
   controllers: [ConversationsController],
   providers: [
     {
