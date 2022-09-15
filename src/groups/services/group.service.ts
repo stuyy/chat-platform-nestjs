@@ -44,6 +44,7 @@ export class GroupService implements IGroupService {
       .leftJoinAndSelect('group.users', 'users')
       .leftJoinAndSelect('group.creator', 'creator')
       .leftJoinAndSelect('group.owner', 'owner')
+      .leftJoinAndSelect('users.profile', 'usersProfile')
       .getMany();
   }
 
