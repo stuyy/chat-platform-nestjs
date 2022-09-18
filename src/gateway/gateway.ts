@@ -365,4 +365,16 @@ export class MessagingGateway
       socket.emit('onVideoCallAccept', payload);
     }
   }
+
+  @SubscribeMessage('videoCallRejected')
+  async handleVideoCallRejected(
+    @MessageBody() data,
+    @ConnectedSocket() socket: AuthenticatedSocket,
+  ) {
+    console.log('inside videoCallRejected event');
+    const receiver = socket.user;
+    const callerSocket = this.sessions.getUserSocket(data.caller.id);
+    callerSocket && callerSocket.emit('onVideoCallRejected', { receiver });
+    socket.emit('onVideoCallRejected', { receiver });
+  }
 }
