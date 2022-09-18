@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hashPassword } from '../../utils/helpers';
-import { User } from '../../utils/typeorm';
+import { Peer, User } from '../../utils/typeorm';
 import {
   CreateUserDetails,
   FindUserOptions,
@@ -14,6 +14,7 @@ import { IUserService } from '../interfaces/user';
 export class UserService implements IUserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Peer) private readonly peerRepository: Repository<Peer>,
   ) {}
 
   async createUser(userDetails: CreateUserDetails) {
@@ -23,7 +24,9 @@ export class UserService implements IUserService {
     if (existingUser)
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
     const password = await hashPassword(userDetails.password);
-    const newUser = this.userRepository.create({ ...userDetails, password });
+    const peer = this.peerRepository.create();
+    const params = { ...userDetails, password, peer };
+    const newUser = this.userRepository.create(params);
     return this.userRepository.save(newUser);
   }
 
@@ -41,7 +44,7 @@ export class UserService implements IUserService {
     const selectionsWithPassword: (keyof User)[] = [...selections, 'password'];
     return this.userRepository.findOne(params, {
       select: options?.selectAll ? selectionsWithPassword : selections,
-      relations: ['profile', 'presence'],
+      relations: ['profile', 'presence', 'peer'],
     });
   }
 

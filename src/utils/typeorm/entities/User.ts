@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Group } from './Group';
 import { Message } from './Message';
+import { Peer } from './Peer';
 import { Profile } from './Profile';
 import { UserPresence } from './UserPresence';
 
@@ -48,4 +49,10 @@ export class User {
   @OneToOne(() => UserPresence, { cascade: ['insert', 'update'] })
   @JoinColumn()
   presence: UserPresence;
+
+  @OneToOne(() => Peer, (peer) => peer.user, {
+    cascade: ['insert', 'remove', 'update'],
+  })
+  @JoinColumn()
+  peer: Peer;
 }
