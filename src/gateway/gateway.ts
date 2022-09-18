@@ -22,6 +22,7 @@ import {
   CreateMessageResponse,
   RemoveGroupUserResponse,
 } from '../utils/types';
+import { CreateCallDto } from './dtos/CreateCallDto';
 import { IGatewaySessionManager } from './gateway.session';
 
 @WebSocketGateway({
@@ -331,6 +332,37 @@ export class MessagingGateway
         ),
       );
       socket.emit('getOnlineFriends', onlineFriends);
+    }
+  }
+
+  @SubscribeMessage('onVideoCallInitiate')
+  async handleVideoCall(
+    @MessageBody() data: CreateCallDto,
+    @ConnectedSocket() socket: AuthenticatedSocket,
+  ) {
+    console.log('onVideoCallInitiate');
+    const caller = socket.user;
+    const receiverSocket = this.sessions.getUserSocket(data.recipientId);
+    if (!receiverSocket) socket.emit('onUserUnavailable');
+    receiverSocket.emit('onVideoCall', { ...data, caller });
+  }
+
+  @SubscribeMessage('videoCallAccepted')
+  async handleVideoCallAccepted(
+    @MessageBody() data,
+    @ConnectedSocket() socket: AuthenticatedSocket,
+  ) {
+    const callerSocket = this.sessions.getUserSocket(data.caller.id);
+    const conversation = await this.conversationService.isCreated(
+      data.caller.id,
+      socket.user.id,
+    );
+    if (!conversation) return console.log('No conversation found');
+    if (callerSocket) {
+      console.log('Emitting onVideoCallAccept event');
+      const payload = { ...data, conversation, acceptor: socket.user };
+      callerSocket.emit('onVideoCallAccept', payload);
+      socket.emit('onVideoCallAccept', payload);
     }
   }
 }
