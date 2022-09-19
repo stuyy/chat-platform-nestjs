@@ -239,3 +239,8 @@ export type UpdateStatusMessageParams = {
   user: User;
   statusMessage: string;
 };
+
+export type VideoCallHangupPayload = {
+  receiver: User;
+  caller: User;
+};
