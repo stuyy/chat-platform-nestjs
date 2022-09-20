@@ -244,3 +244,12 @@ export type VideoCallHangupPayload = {
   receiver: User;
   caller: User;
 };
+
+export type VoiceCallPayload = {
+  conversationId: number;
+  recipientId: number;
+};
+
+export type CallAcceptedPayload = {
+  caller: User;
+};
