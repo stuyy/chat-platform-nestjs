@@ -25,10 +25,10 @@ import {
 import {
   AddGroupUserResponse,
   CallAcceptedPayload,
+  CallHangUpPayload,
   CreateGroupMessageResponse,
   CreateMessageResponse,
   RemoveGroupUserResponse,
-  VideoCallHangupPayload,
   VoiceCallPayload,
 } from '../utils/types';
 import { CreateCallDto } from './dtos/CreateCallDto';
@@ -375,7 +375,7 @@ export class MessagingGateway
     }
   }
 
-  @SubscribeMessage('videoCallRejected')
+  @SubscribeMessage(WebsocketEvents.VIDEO_CALL_REJECTED)
   async handleVideoCallRejected(
     @MessageBody() data,
     @ConnectedSocket() socket: AuthenticatedSocket,
@@ -383,13 +383,14 @@ export class MessagingGateway
     console.log('inside videoCallRejected event');
     const receiver = socket.user;
     const callerSocket = this.sessions.getUserSocket(data.caller.id);
-    callerSocket && callerSocket.emit('onVideoCallRejected', { receiver });
-    socket.emit('onVideoCallRejected', { receiver });
+    callerSocket &&
+      callerSocket.emit(WebsocketEvents.VIDEO_CALL_REJECTED, { receiver });
+    socket.emit(WebsocketEvents.VIDEO_CALL_REJECTED, { receiver });
   }
 
   @SubscribeMessage('videoCallHangUp')
   async handleVideoCallHangUp(
-    @MessageBody() { caller, receiver }: VideoCallHangupPayload,
+    @MessageBody() { caller, receiver }: CallHangUpPayload,
     @ConnectedSocket() socket: AuthenticatedSocket,
   ) {
     console.log('inside videoCallHangup event');
@@ -432,5 +433,37 @@ export class MessagingGateway
       callerSocket.emit(WebsocketEvents.VOICE_CALL_ACCEPTED, callPayload);
       socket.emit(WebsocketEvents.VOICE_CALL_ACCEPTED, callPayload);
     }
+  }
+
+  @SubscribeMessage(WebsocketEvents.VOICE_CALL_HANG_UP)
+  async handleVoiceCallHangUp(
+    @MessageBody() { caller, receiver }: CallHangUpPayload,
+    @ConnectedSocket() socket: AuthenticatedSocket,
+  ) {
+    console.log('inside onVoiceCallHangUp event');
+    if (socket.user.id === caller.id) {
+      const receiverSocket = this.sessions.getUserSocket(receiver.id);
+      socket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
+      return (
+        receiverSocket &&
+        receiverSocket.emit(WebsocketEvents.VOICE_CALL_HANG_UP)
+      );
+    }
+    socket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
+    const callerSocket = this.sessions.getUserSocket(caller.id);
+    callerSocket && callerSocket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
+  }
+
+  @SubscribeMessage(WebsocketEvents.VOICE_CALL_REJECTED)
+  async handleVoiceCallRejected(
+    @MessageBody() data,
+    @ConnectedSocket() socket: AuthenticatedSocket,
+  ) {
+    console.log('inside onVoiceCallRejected event');
+    const receiver = socket.user;
+    const callerSocket = this.sessions.getUserSocket(data.caller.id);
+    callerSocket &&
+      callerSocket.emit(WebsocketEvents.VOICE_CALL_REJECTED, { receiver });
+    socket.emit(WebsocketEvents.VOICE_CALL_REJECTED, { receiver });
   }
 }
