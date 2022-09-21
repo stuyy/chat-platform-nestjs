@@ -1,15 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { IImageStorageService } from '../../image-storage/image-storage';
 import { UserNotFoundException } from '../../users/exceptions/UserNotFound';
 import { IUserService } from '../../users/interfaces/user';
 import { Services } from '../../utils/constants';
+import { generateUUIDV4 } from '../../utils/helpers';
 import { Group, User } from '../../utils/typeorm';
 import {
   AccessParams,
+  Attachment,
   CreateGroupParams,
   FetchGroupsParams,
   TransferOwnerParams,
+  UpdateGroupDetailsParams,
 } from '../../utils/types';
 import { GroupNotFoundException } from '../exceptions/GroupNotFound';
 import { GroupOwnerTransferException } from '../exceptions/GroupOwnerTransfer';
@@ -22,6 +26,8 @@ export class GroupService implements IGroupService {
     private readonly groupRepository: Repository<Group>,
     @Inject(Services.USERS)
     private readonly userService: IUserService,
+    @Inject(Services.IMAGE_UPLOAD_SERVICE)
+    private readonly imageStorageService: IImageStorageService,
   ) {}
 
   async createGroup(params: CreateGroupParams) {
@@ -89,6 +95,18 @@ export class GroupService implements IGroupService {
     const newOwner = await this.userService.findUser({ id: newOwnerId });
     if (!newOwner) throw new UserNotFoundException();
     group.owner = newOwner;
+    return this.groupRepository.save(group);
+  }
+
+  async updateDetails(params: UpdateGroupDetailsParams): Promise<Group> {
+    const group = await this.findGroupById(params.id);
+    if (!group) throw new GroupNotFoundException();
+    if (params.avatar) {
+      const key = generateUUIDV4();
+      await this.imageStorageService.upload({ key, file: params.avatar });
+      group.avatar = key;
+    }
+    group.title = params.title ?? group.title;
     return this.groupRepository.save(group);
   }
 }

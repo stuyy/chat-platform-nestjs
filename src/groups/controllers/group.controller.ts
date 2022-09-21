@@ -4,16 +4,22 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Routes, Services } from '../../utils/constants';
 import { AuthUser } from '../../utils/decorators';
 import { User } from '../../utils/typeorm';
+import { Attachment } from '../../utils/types';
 import { CreateGroupDto } from '../dtos/CreateGroup.dto';
 import { TransferOwnerDto } from '../dtos/TransferOwner.dto';
+import { UpdateGroupDetailsDto } from '../dtos/UpdateGroupDetails.dto';
 import { IGroupService } from '../interfaces/group';
 
 @SkipThrottle()
@@ -54,5 +60,17 @@ export class GroupController {
     const group = await this.groupService.transferGroupOwner(params);
     this.eventEmitter.emit('group.owner.update', group);
     return group;
+  }
+
+  @Patch(':id/details')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async updateGroupDetails(
+    @Body() { title }: UpdateGroupDetailsDto,
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() avatar: Attachment,
+  ) {
+    console.log(avatar);
+    console.log(title);
+    return this.groupService.updateDetails({ id, avatar, title });
   }
 }

@@ -49,4 +49,7 @@ export class Group {
 
   @UpdateDateColumn({ name: 'updated_at' })
   lastMessageSentAt: Date;
+
+  @Column()
+  avatar?: string;
 }

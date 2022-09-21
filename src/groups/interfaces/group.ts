@@ -4,6 +4,7 @@ import {
   CreateGroupParams,
   FetchGroupsParams,
   TransferOwnerParams,
+  UpdateGroupDetailsParams,
 } from '../../utils/types';
 
 export interface IGroupService {
@@ -13,4 +14,5 @@ export interface IGroupService {
   saveGroup(group: Group): Promise<Group>;
   hasAccess(params: AccessParams): Promise<User | undefined>;
   transferGroupOwner(params: TransferOwnerParams): Promise<Group>;
+  updateDetails(params: UpdateGroupDetailsParams): Promise<Group>;
 }

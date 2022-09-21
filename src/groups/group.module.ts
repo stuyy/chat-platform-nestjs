@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ImageStorageModule } from '../image-storage/image-storage.module';
 import { MessageAttachmentsModule } from '../message-attachments/message-attachments.module';
 import { UsersModule } from '../users/users.module';
 import { Services } from '../utils/constants';
@@ -17,6 +18,7 @@ import { GroupService } from './services/group.service';
   imports: [
     UsersModule,
     MessageAttachmentsModule,
+    ImageStorageModule,
     TypeOrmModule.forFeature([Group, GroupMessage]),
   ],
   controllers: [
