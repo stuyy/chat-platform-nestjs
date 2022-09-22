@@ -55,6 +55,6 @@ export class AuthController {
   @Post('logout')
   @swagger.ApiOkResponse()
   logout() {
-    return HttpStatus.OK;
+    return null;
   }
 }
