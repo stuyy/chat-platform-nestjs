@@ -9,6 +9,12 @@ import * as passport from 'passport';
 import { getRepository } from 'typeorm';
 import { WebsocketAdapter } from './gateway/gateway.adapter';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import {
+  swaggerPath,
+  swaggerDocumentOptions,
+  swaggerSetupOptions,
+} from './swagger';
 
 async function bootstrap() {
   const { PORT, COOKIE_SECRET } = process.env;
@@ -32,7 +38,21 @@ async function bootstrap() {
       store: new TypeormStore().connect(sessionRepository),
     }),
   );
+  const document = SwaggerModule.createDocument(app, swaggerDocumentOptions);
 
+  /** check if there is Public decorator for each path (action) and its method (findMany / findOne) on each controller */
+  Object.values((document as OpenAPIObject).paths).forEach((path: any) => {
+    Object.values(path).forEach((method: any) => {
+      if (
+        Array.isArray(method.security) &&
+        method.security.includes('isPublic')
+      ) {
+        method.security = [];
+      }
+    });
+  });
+  SwaggerModule.setup(swaggerPath, app, document, swaggerSetupOptions);
+  
   app.use(passport.initialize());
   app.use(passport.session());
 
