@@ -10,7 +10,11 @@ import { IMessageAttachmentsService } from '../message-attachments/message-attac
 import { buildFindMessageParams } from '../utils/builders';
 import { Services } from '../utils/constants';
 import { Conversation, Message } from '../utils/typeorm';
-import { CreateMessageParams, DeleteMessageParams, EditMessageParams } from '../utils/types';
+import {
+  CreateMessageParams,
+  DeleteMessageParams,
+  EditMessageParams,
+} from '../utils/types';
 import { CannotCreateMessageException } from './exceptions/CannotCreateMessage';
 import { CannotDeleteMessage } from './exceptions/CannotDeleteMessage';
 import { IMessageService } from './message';
@@ -32,7 +36,10 @@ export class MessageService implements IMessageService {
     const conversation = await this.conversationService.findById(id);
     if (!conversation) throw new ConversationNotFoundException();
     const { creator, recipient } = conversation;
-    const isFriends = await this.friendsService.isFriends(creator.id, recipient.id);
+    const isFriends = await this.friendsService.isFriends(
+      creator.id,
+      recipient.id,
+    );
     if (!isFriends) throw new FriendNotFoundException();
     if (creator.id !== user.id && recipient.id !== user.id)
       throw new CannotCreateMessageException();
@@ -98,9 +105,16 @@ export class MessageService implements IMessageService {
         id: params.messageId,
         author: { id: params.userId },
       },
-      relations: ['conversation', 'conversation.creator', 'conversation.recipient', 'author'],
+      relations: [
+        'conversation',
+        'conversation.creator',
+        'conversation.recipient',
+        'author',
+        'author.profile',
+      ],
     });
-    if (!messageDB) throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);
+    if (!messageDB)
+      throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);
     messageDB.content = params.content;
     return this.messageRepository.save(messageDB);
   }
