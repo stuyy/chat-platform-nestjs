@@ -9,13 +9,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import { instanceToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
 import { IUserService } from '../users/interfaces/user';
 import { Routes, Services } from '../utils/constants';
-import { AuthUser } from '../utils/decorators';
-import { User } from '../utils/typeorm';
+import { AuthenticatedRequest } from '../utils/types';
 import { IAuthService } from './auth';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { AuthenticatedGuard, LocalAuthGuard } from './utils/Guards';
@@ -45,5 +43,10 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout() {}
+  @UseGuards(AuthenticatedGuard)
+  logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    req.logout((err) => {
+      return err ? res.send(400) : res.send(200);
+    });
+  }
 }
